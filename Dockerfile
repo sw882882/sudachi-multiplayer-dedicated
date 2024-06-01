@@ -41,15 +41,15 @@ RUN apt-get update && apt-get -y full-upgrade && \
 COPY . /root/build-files
 
 RUN --mount=type=cache,id=ccache,target=/root/.ccache \
-    git clone --depth 1000 -j4 --recursive https://github.com/yuzu-emu/yuzu-mainline.git /root/yuzu-mainline && \
-    cd /root/yuzu-mainline && /root/build-files/.ci/build.sh
+    git clone --depth 1000 -j4 --recursive https://github.com/sudachi-emu/sudachi.git /root/sudachi-mainline && \
+    cd /root/sudachi-mainline && /root/build-files/.ci/build.sh
 
 FROM rootfs-prep AS sliced-deps
 COPY --from=chisel /opt/chisel-releases /opt/chisel-releases
 RUN chisel cut --release /opt/chisel-releases --root /rootfs \
     base-files_base \
     base-files_release-info \
-    ca-certificates_data \
+#    ca-certificates_data \
     libgcc-s1_libs \
     libc6_libs \
     libssl3_libs \
@@ -59,8 +59,7 @@ RUN chisel cut --release /opt/chisel-releases --root /rootfs \
 
 FROM image-prep AS final
 COPY --from=sliced-deps /rootfs /
-LABEL maintainer="yuzuemu"
 # Create app directory
 WORKDIR /usr/src/app
-COPY --from=build /root/yuzu-mainline/build/bin/yuzu-room /usr/src/app
-ENTRYPOINT [ "/usr/src/app/yuzu-room" ]
+COPY --from=build /root/sudachi-mainline/build/bin/sudachi-room /usr/src/app
+ENTRYPOINT [ "/usr/src/app/sudachi-room" ]

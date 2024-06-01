@@ -54,7 +54,7 @@ download_extract "https://github.com/lz4/lz4/archive/refs/tags/v${LZ4_VERSION}.t
 cmake_install -DLZ4_BUILD_CLI=OFF -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=OFF -DLZ4_BUILD_LEGACY_LZ4C=OFF
 # we need to adjust the exported name of the static library
 cat << EOF >> /usr/local/lib/cmake/lz4/lz4Targets.cmake
-# Injected commands by yuzu-room builder script
+# Injected commands by sudachi-room builder script
 add_library(lz4::lz4 ALIAS LZ4::lz4_static)
 EOF
 popd
@@ -62,10 +62,10 @@ popd
 info "boost ${BOOST_VERSION}"
 download_extract "https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.xz" "boost-${BOOST_VERSION}" 2e64e5d79a738d0fa6fb546c6e5c2bd28f88d268a2a080546f74e5ff98f29d0e
 # Boost use its own ad-hoc build system
-# we only enable what yuzu needs
+# we only enable what sudachi needs
 ./bootstrap.sh --with-libraries=context,container,system,headers
 ./b2 -j "$(nproc)" install --prefix=/usr/local
 popd
 
-# fake xbyak for non-amd64 (workaround a CMakeLists bug in yuzu)
+# fake xbyak for non-amd64 (workaround a CMakeLists bug in sudachi)
 echo '!<arch>' > /usr/local/lib/libxbyak.a
